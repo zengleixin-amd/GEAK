@@ -176,7 +176,7 @@ const EXPERT_SKILL_ROLES = new Set(['op_benchmarker']);
 // Warm-start experience KB. Passed to each lane explicitly (the bakeoff lane invocation spreads
 // specific keys, not ...A) so every language lane reads/writes its own <kernel>__<lang>__<gfx> slug.
 let WARM_START = RDNA4_ISOLATE ? 'off'
-  : (String(A.warm_start != null ? A.warm_start : 'on').trim().toLowerCase() || 'on');
+  : (String(A.warm_start != null ? A.warm_start : 'off').trim().toLowerCase() || 'off');
 const KB_ARTIFACTS_DIR = String(A.kb_artifacts_dir ||
   (WORKFLOW_DIR.replace(/\/[^/]*$/, '') + '/kb_artifacts')).replace(/\/+$/, '');
 // Plane selection, forwarded the same way and for the same reason: every bakeoff lane must read and
@@ -576,7 +576,7 @@ const results = await Promise.all(lanes.map(l => sem.with(1, async ([gpu]) => {
       // Forward the KB switch. This arg object is explicit (the optimize/author path spreads {...A},
       // this one does not), so anything omitted here silently reverts to the lane's default — a
       // caller asking for a KB-off bakeoff would have got eight KB-on lanes and no error.
-      use_learned_kb: A.use_learned_kb != null ? String(A.use_learned_kb) : 'true',
+      use_learned_kb: A.use_learned_kb != null ? String(A.use_learned_kb) : 'false',
       // This explicit arg object drops nothing load-bearing that the parent set: forward llm_stats
       // when supplied so a parent opt-out reaches each lane (unset stays absent -> lane default on).
       ...(A.llm_stats != null ? { llm_stats: String(A.llm_stats) } : {}),

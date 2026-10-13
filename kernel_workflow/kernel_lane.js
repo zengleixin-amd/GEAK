@@ -217,11 +217,14 @@ const LEARNED_DIR = `${WORKFLOW_DIR}/knowledge/learned`;
 // before the run was stopped. A parse test cannot catch that: the file compiles, and the reference
 // only resolves when the line runs. Default ON, matching this branch's design where the tech_lead
 // role reads INDEX.md unconditionally; `use_learned_kb=false` turns the budget block off with it.
-let USE_LEARNED_READ = String(A.use_learned_kb != null ? A.use_learned_kb : 'true') === 'true';
+// Control-arm branch: every experience channel defaults OFF so a caller that cannot pass these args
+// (Kernel Arena's launcher builds a fixed arg set) still runs cold; the learned cards themselves are
+// removed from this branch too, so a role that ignores the switch has nothing to read.
+let USE_LEARNED_READ = String(A.use_learned_kb != null ? A.use_learned_kb : 'false') === 'true';
 const KB_DIR_CAP = Math.max(0, parseInt(A.kb_dir_cap != null ? A.kb_dir_cap : 1, 10));
 const KB_COLD_DIRECTION = String(A.kb_cold_direction != null ? A.kb_cold_direction : 'true') === 'true';
 let kbCapBound = 0;      // rounds where the cap actually had to strip something
-const UPDATE_EXPERIENCE = String(A.update_experience != null ? A.update_experience : 'on').trim().toLowerCase() || 'on';
+const UPDATE_EXPERIENCE = String(A.update_experience != null ? A.update_experience : 'off').trim().toLowerCase() || 'off';
 const UPDATE_EXPERIENCE_ON = UPDATE_EXPERIENCE !== 'off' && UPDATE_EXPERIENCE !== 'false' && UPDATE_EXPERIENCE !== 'none';
 // Did the CALLER freeze this kernel through oracle_freezer? Only the bake-off dispatcher does, so this
 // tells director whether a GEAK_TIMING_RECEIPT is producible at all before it gates on one. Must be an
@@ -237,7 +240,7 @@ const FROZEN_ORACLE = String(A.frozen_oracle != null ? A.frozen_oracle : 'false'
 //   reference         | read top-3 as prose only, never auto-apply.
 //   return_after_read | adopt then RETURN before the optimize loop.
 //   off/false/none, a STATE_DIR resume, or no arch => cold start (byte-identical to pre-feature).
-const WARM_START = String(A.warm_start != null ? A.warm_start : 'on').trim().toLowerCase() || 'on';
+const WARM_START = String(A.warm_start != null ? A.warm_start : 'off').trim().toLowerCase() || 'off';
 let WARM_START_ON = WARM_START !== 'off' && WARM_START !== 'false' && WARM_START !== 'none';
 if (SKILLS_ISOLATE) {
   KERNEL_KNOWLEDGE_DIR = '';
